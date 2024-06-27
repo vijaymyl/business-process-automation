@@ -19,17 +19,6 @@
       "type": "string",
       "defaultValue": "[format('bpa{0}', toLower(uniqueString(resourceGroup().id)))]"
     },
-    "resourceGroupName": {
-      "defaultValue": "[resourceGroup().name]",
-      "type": "String"
-  },
-    "identityName": {
-      "type": "string",
-      "defaultValue": "copyidentity",
-      "metadata": {
-        "description": "Specifies the name of the user-assigned managed identity."
-      }
-    },
     "openaiName": {
       "type": "string",
       "defaultValue": "[format('oai{0}', parameters('projectName'))]"
@@ -220,7 +209,6 @@
   "variables": {
     "storageAccountSkuName": "[if(equals(parameters('environmentType'), 'prod'), 'Standard_GRS', 'Standard_LRS')]",
     "accountName_var": "[toLower(parameters('accountName'))]",
-    "bootstrapRoleAssignmentId": "[guid(concat(resourceGroup().id, 'contributor'))]",
     "consistencyPolicy": {
       "Eventual": {
         "defaultConsistencyLevel": "Eventual"
@@ -623,7 +611,7 @@
           "appSettings": [
             {
               "name": "WEBSITE_RUN_FROM_PACKAGE",
-              "value": "https://bpasource.blob.core.windows.net/source/huggingface/hf_backend_v012.zip?sv=2021-10-04&st=2023-05-31T17%3A28%3A30Z&se=2024-04-18T17%3A28%3A00Z&sr=b&sp=r&sig=RC7DsOnq6zgmLHy36Ym6UfimmmE9pPMVsxyI04GIGOQ%3D"
+              "value": "https://experienceazure.blob.core.windows.net/templates/business-process-automation/files/functionappfiles/hf_backend_v012.zip?sv=2023-01-03&st=2024-06-27T09%3A03%3A11Z&se=2026-06-28T09%3A03%3A00Z&sr=b&sp=rac&sig=%2FnoMUFHpinWhDnR1PbtLSiEVrqS9C0BNKiHuUSPmBFM%3D"
             },
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
@@ -714,7 +702,7 @@
           "appSettings": [
             {
               "name": "WEBSITE_RUN_FROM_PACKAGE",
-              "value": "https://bpasource.blob.core.windows.net/source/backendv050.zip?sv=2020-10-02&st=2023-10-16T12%3A44%3A43Z&se=2024-07-19T12%3A44%3A00Z&sr=b&sp=r&sig=si5yNbcSi9Fno8RWMsB3AhhoFyVjwbic0CzX7Aam6XM%3D"
+              "value": "https://experienceazure.blob.core.windows.net/templates/business-process-automation/files/functionappfiles/backendV50.zip?sv=2023-01-03&st=2024-06-27T09%3A02%3A35Z&se=2026-06-28T09%3A02%3A00Z&sr=b&sp=racw&sig=kEnrisIplzoK9im6ylJ2SJ%2F9J9sj3Pf%2FFtJkU%2FgVQ4U%3D"
             },
             {
               "name": "OPENAI_KEY",
@@ -909,68 +897,6 @@
         }
       }
     },
-    {
-      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2018-11-30",
-      "name": "[parameters('identityName')]",
-      "location": "[resourceGroup().location]"
-    },
-    {
-      "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2020-10-01-preview",
-      "name": "[variables('bootstrapRoleAssignmentId')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('identityName'))]"
-      ],
-      "properties": {
-        "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('identityName')), '2018-11-30').principalId]",
-        "scope": "[resourceGroup().id]",
-        "principalType": "ServicePrincipal"
-      }
-    },
-    {
-        "type": "Microsoft.Resources/deploymentScripts",
-        "apiVersion": "2020-10-01",
-        "name": "copyBlobDataScript",
-        "location": "[parameters('primaryRegion')]",
-        "dependsOn": [
-            "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
-            "[resourceId('Microsoft.Authorization/roleAssignments', variables('bootstrapRoleAssignmentId'))]"
-            
-        ],
-        "kind": "AzurePowerShell",
-        "identity": {
-          "type": "UserAssigned",
-          "userAssignedIdentities": {
-            "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('identityName'))]": {
-            }
-          }
-        },
-        "properties": {
-            "azPowerShellVersion": "5.0.0",
-            "primaryScriptUri": "https://experienceazure.blob.core.windows.net/templates/business-process-automation/scripts/copyblobs.ps1",
-            "arguments": "[format(' -destinationStorageAccountName {0} -resourceGroupName {1}', parameters('storageAccountName'), parameters('resourceGroupName'))]",
-            "timeout": "PT30M",
-            "cleanupPreference": "OnSuccess",
-            "retentionInterval": "P1D",
-            "environmentVariables": [
-                {
-                    "name": "AZURE_BLOB_STORAGE_ACCOUNT",
-                    "value": "[parameters('storageAccountName')]"
-                },
-                {
-                    "name": "AZURE_BLOB_STORAGE_CONTAINER",
-                    "value": "[parameters('blobContainerName')]"
-                }
-            ],
-            "storageAccountSettings": {
-                "storageAccountName": "[parameters('storageAccountName')]",
-                "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2021-08-01').keys[0].value]"
-            }
-        }
-    },
-
 
     {
       "type": "Microsoft.Web/staticSites/config",
