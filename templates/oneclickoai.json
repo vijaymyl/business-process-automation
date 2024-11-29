@@ -611,7 +611,7 @@
           "appSettings": [
             {
               "name": "WEBSITE_RUN_FROM_PACKAGE",
-              "value": "https://experienceazure.blob.core.windows.net/templates/business-process-automation/files/functionappfiles/hf_backend_v012.zip?sv=2023-01-03&st=2024-06-27T09%3A03%3A11Z&se=2026-06-28T09%3A03%3A00Z&sr=b&sp=rac&sig=%2FnoMUFHpinWhDnR1PbtLSiEVrqS9C0BNKiHuUSPmBFM%3D"
+              "value": "https://experienceazure.blob.core.windows.net/templates/business-process-automation/files/functionappfiles/hf_backend_v012.zip?sp=racw&st=2024-11-29T16:08:03Z&se=2025-11-30T00:08:03Z&spr=https&sv=2022-11-02&sr=c&sig=VysFSaYtYOnN1Ty0cOx4hnVLDGag3tWJDpfEOMSrG3Y%3D"
             },
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
@@ -702,7 +702,7 @@
           "appSettings": [
             {
               "name": "WEBSITE_RUN_FROM_PACKAGE",
-              "value": "https://experienceazure.blob.core.windows.net/templates/business-process-automation/files/functionappfiles/backendV50.zip?sv=2023-01-03&st=2024-06-27T09%3A02%3A35Z&se=2026-06-28T09%3A02%3A00Z&sr=b&sp=racw&sig=kEnrisIplzoK9im6ylJ2SJ%2F9J9sj3Pf%2FFtJkU%2FgVQ4U%3D"
+              "value": "https://experienceazure.blob.core.windows.net/templates/business-process-automation/files/functionappfiles/backendV50.zip?sp=racw&st=2024-11-29T16:08:03Z&se=2025-11-30T00:08:03Z&spr=https&sv=2022-11-02&sr=c&sig=VysFSaYtYOnN1Ty0cOx4hnVLDGag3tWJDpfEOMSrG3Y%3D"
             },
             {
               "name": "OPENAI_KEY",
